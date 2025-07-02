@@ -325,6 +325,14 @@ const firebaseConfig = {
 
     // Init Firebase
     const app = initializeApp(firebaseConfig);
+
+    // Initialize App Check with reCAPTCHA v3 provider
+const appCheck = initializeAppCheck(app, {
+  provider: new ReCaptchaV3Provider('6Lf-anUrAAAAADCtRE4m06mzc5WTQYOa0mvOggyi'),
+  isTokenAutoRefreshEnabled: true // optional, but recommended to auto-refresh App Check tokens
+});
+
+  // Initialize Firestore
     const db = getFirestore(app);
 
     const categoryList = document.getElementById('category-list');
