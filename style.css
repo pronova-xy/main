@@ -58,13 +58,14 @@ header {
 }
 
 .modal-content {
-  background: rgb(17, 0, 255);
+  background: rgb(32, 32, 32);
   margin: 5% auto;
   padding: 2rem 2.5rem;
   border-radius: 10px;
   max-width: 700px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.25);
   position: relative;
+  color: white;
 }
 
 .close {
@@ -141,7 +142,7 @@ header {
 .modal-product-detail p {
   font-size: 1rem;
   margin: 0.4rem 0;
-  color: #333;
+  color: #ffffff;
 }
 
 .back-button {
