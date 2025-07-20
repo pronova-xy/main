@@ -539,24 +539,33 @@ const firebaseConfig = {
     }
 
     function showProductDetail(product) {
-      currentProduct = product;
-      modalTitle.textContent = product.name;
-      detailName.textContent = product.name;
-      detailImage.src = product.image;
-      detailPrice.textContent = product.price;
-      detailStock.textContent = product.stock ?? '∞';
-      detailDescription.textContent = product.description || '';
+  currentProduct = product;
+  modalTitle.textContent = product.name;
+  detailName.textContent = product.name;
+  detailImage.src = product.image;
+  detailPrice.textContent = product.price;
+  
+  // Show stock as number or ∞ for infinite (-1 or less)
+  if (product.stock !== undefined && product.stock !== null && product.stock < 0) {
+    detailStock.textContent = "∞";
+  } else {
+    detailStock.textContent = product.stock ?? '∞';
+  }
+  
+  detailDescription.textContent = product.description || '';
 
-      // Setup slider max based on stock (or 1000 if infinite)
-      let maxQty = product.stock ?? 1000;
-      if (maxQty <= 0) maxQty = 1;
-      quantitySlider.max = maxQty;
-      quantitySlider.value = 1;
-      updateQuantityDisplay(1);
+  // Setup slider max based on stock (or 1000 if infinite)
+  let maxQty = product.stock;
+  if (maxQty === undefined || maxQty === null || maxQty < 0) maxQty = 1000;
+  if (maxQty <= 0) maxQty = 1;
+  
+  quantitySlider.max = maxQty;
+  quantitySlider.value = 1;
+  updateQuantityDisplay(1);
 
-      modalProducts.style.display = 'none';
-      modalProductDetail.style.display = 'block';
-    }
+  modalProducts.style.display = 'none';
+  modalProductDetail.style.display = 'block';
+}
 
     addToCartBtn.onclick = () => {
       if (!currentProduct) return;
@@ -567,6 +576,9 @@ const firebaseConfig = {
       if (availableStock !== undefined && availableStock !== null && availableStock == 0) {
         alert("Sorry, this product is out of stock.");
         return;
+      }
+      if (availableStock < 0){
+        detailStock.textContent = "∞"; 
       }
 
       const existing = cart.find(item => item.id === currentProduct.id);
@@ -666,18 +678,21 @@ applyDiscountBtn.onclick = async () => {
           if (item.stock !== undefined && item.stock !== null) {
             const productRef = doc(db, "categories", currentCategory, "products", item.id);
             const newStock = (item.stock - item.quantity);
-            if (newStock < 0) throw new Error("Stock error");
+            if (newStock === 0) throw new Error("Stock error");
             await updateDoc(productRef, { stock: newStock });
           }
         }
 
         // Send order webhook
-        await fetch("https://discord.com/api/webhooks/1390070614655766599/O3VxdveaNGRt4khCybKCYDhKsIdywtoJUTekOfmGfQXFh148c0PfIcigBEjGp93XGIk4", {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({
-  content: `New order from **${order.username}**\nItems:\n${cart.map(i => `- ${i.name} x${i.quantity} ($${(i.price * i.quantity).toFixed(2)}) [${i.category ?? currentCategory}]`).join('\n')}\nTotal: $${order.total.toFixed(2)}`
-}),
+        await fetch("https://discord.com/api/webhooks/1396477883215642624/NkbpmHTuzXH97wVqeY5XITiwFYtlNNDotVq87dWXvjTKBUi5xwVOMiHDEcVNQfYkKFlL", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    content: `New order from **${order.username}**\nItems:\n${cart.map(i => `- ${i.name} x${i.quantity} ($${(i.price * i.quantity).toFixed(2)}) [${i.category ?? currentCategory}]`).join('\n')}\nTotal: $${order.total.toFixed(2)}`,
+    username: "pronova shop",                 // <-- Your custom webhook name here
+    avatar_url: "https://i.ibb.co/W4QwNcBz/TW1-ZT-1.png"  // <-- Your custom avatar URL here
+  }),
+
 
         });
 

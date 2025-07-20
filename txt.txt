@@ -1,0 +1,43 @@
+// Send cart to Discord webhook
+placeOrderBtn.onclick = async () => {
+  const username = discordInput.value.trim();
+  if (!username) {
+    alert("Please enter your Discord username.");
+    return;
+  }
+  if (cart.length === 0) {
+    alert("Your cart is empty.");
+    return;
+  }
+
+  const content = `🛒 **New Order from ${username}**\n\n` +
+    cart.map(p => `• ${p.name} - $${p.price.toFixed(2)}`).join('\n');
+
+  const webhookUrl = 'https://discord.com/api/webhooks/1396477883215642624/NkbpmHTuzXH97wVqeY5XITiwFYtlNNDotVq87dWXvjTKBUi5xwVOMiHDEcVNQfYkKFlL'; // Replace with yours
+
+  const customName = "Pronova"; // 👈 Set this to whatever name you want
+  const avatarUrl = "https://i.ibb.co/W4QwNcBz/TW1-ZT-1.png"; // 👈 Replace with your preferred PFP image URL
+
+  try {
+    const res = await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        content,
+        username: customName,
+        avatar_url: avatarUrl
+      }),
+    });
+
+    if (res.ok) {
+      alert("Order placed and sent to Discord!");
+      cart = [];
+      updateCart();
+      discordInput.value = "";
+    } else {
+      throw new Error("Failed to send webhook");
+    }
+  } catch (err) {
+    alert("Something went wrong: " + err.message);
+  }
+};
