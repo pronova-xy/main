@@ -485,7 +485,16 @@ const firebaseConfig = {
     quantitySlider.oninput = () => {
       updateQuantityDisplay(quantitySlider.value);
     };
+async function getWebhookUrl() {
+  const docRef = doc(db, "config", "webhooks");
+  const docSnap = await getDoc(docRef);
 
+  if (docSnap.exists()) {
+    return docSnap.data().orderWebhookUrl;
+  } else {
+    throw new Error("No webhook URL found in Firestore");
+  }
+}
     async function loadCategories() {
       const categoriesSnapshot = await getDocs(collection(db, "categories"));
       categoryList.innerHTML = '';
@@ -684,7 +693,8 @@ applyDiscountBtn.onclick = async () => {
         }
 
         // Send order webhook
-        await fetch("https://discord.com/api/webhooks/1396477883215642624/NkbpmHTuzXH97wVqeY5XITiwFYtlNNDotVq87dWXvjTKBUi5xwVOMiHDEcVNQfYkKFlL", {
+        const webhookUrl = await getWebhookUrl();
+        await fetch(webhookUrl, {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
