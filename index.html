@@ -744,7 +744,6 @@ applyDiscountBtn.onclick = async () => {
 
     // Show modal on page load with shop start screen
     window.onload = async () => {
-      await logAllDiscountCodes();
       await loadCategories();
       modal.style.display = 'block';
       startModal.style.display = 'block';
