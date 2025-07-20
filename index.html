@@ -510,21 +510,7 @@ async function getWebhookUrl() {
         categoryList.appendChild(div);
       });
     }
-    async function logAllDiscountCodes() {
-  const discountRef = collection(db, "discountCodes");
-  const snapshot = await getDocs(discountRef);
-
-  if (snapshot.empty) {
-    console.log("No discount codes found.");
-    return;
-  }
-
-  console.log("Available Discount Codes:");
-  snapshot.forEach(doc => {
-    const data = doc.data();
-    console.log(`- Code: ${doc.id} | Type: ${data.type} | Amount: ${data.amount}`);
-  });
-}
+    
     async function openCategoryModal(categoryId) {
       currentCategory = categoryId;
       modalTitle.textContent = categoryId;
