@@ -420,7 +420,7 @@
   </script>
   <script type="module">
     
-
+    import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app-check.js";
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
     import { getFirestore, collection, getDocs, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
@@ -434,6 +434,10 @@ const firebaseConfig = {
   appId: "1:675801229903:web:8d366648305b0731f8183a",
   measurementId: "G-RJ1NS8E4K9"
 };
+  const appCheck = initializeAppCheck(app, {
+  provider: new ReCaptchaV3Provider('6Lf-anUrAAAAADCtRE4m06mzc5WTQYOa0mvOggyi'),
+  isTokenAutoRefreshEnabled: true // keeps your app check tokens fresh automatically
+});
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
