@@ -1,756 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>pronova store</title>
-  <script async src="https://js.stripe.com/v3/buy-button.js"></script>
-  <style>
-    @keyframes move {
-      100% {
-          transform: translate3d(0, 0, 1px) rotate(360deg);
-      }
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pronova Store</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://js.stripe.com/v3/"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-check-compat.js"></script>
 
-    .background {
-        position: fixed;
-        width: 100vw;
-        height: 100vh;
-        top: 0;
-        left: 0;
-        background: #000b19;
-        overflow: hidden;
-        z-index: -1; /* put background behind content */
-    }
+<!-- Include other services you use -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
-    .background span {
-        width: 20vmin;
-        height: 20vmin;
-        border-radius: 20vmin;
-        backface-visibility: hidden;
-        position: absolute;
-        animation: move;
-        animation-duration: 45s;
-        animation-timing-function: linear;
-        animation-iteration-count: infinite;
-    }
-
-    .background span:nth-child(1) {
-    color: #5d00ff;
-    top: 41%;
-    left: 64%;
-    animation-duration: 50s;
-    animation-delay: -29s;
-    transform-origin: -14vw -11vh;
-    box-shadow: 40vmin 0 5.33vmin currentColor;
-}
-.background span:nth-child(2) {
-    color: #5d00ff;
-    top: 65%;
-    left: 80%;
-    animation-duration: 55s;
-    animation-delay: -12s;
-    transform-origin: 14vw 5vh;
-    box-shadow: -40vmin 0 5.46vmin currentColor;
-}
-.background span:nth-child(3) {
-    color: #5d00ff;
-    top: 31%;
-    left: 4%;
-    animation-duration: 16s;
-    animation-delay: -41s;
-    transform-origin: 12vw 19vh;
-    box-shadow: 40vmin 0 5.74vmin currentColor;
-}
-.background span:nth-child(4) {
-    color: #00aaff;
-    top: 38%;
-    left: 20%;
-    animation-duration: 53s;
-    animation-delay: -13s;
-    transform-origin: 7vw -1vh;
-    box-shadow: -40vmin 0 5.61vmin currentColor;
-}
-.background span:nth-child(5) {
-    color: #5d00ff;
-    top: 50%;
-    left: 10%;
-    animation-duration: 48s;
-    animation-delay: -22s;
-    transform-origin: -10vw 8vh;
-    box-shadow: 35vmin 0 5.40vmin currentColor;
-}
-.background span:nth-child(6) {
-    color: #00aaff;
-    top: 70%;
-    left: 55%;
-    animation-duration: 60s;
-    animation-delay: -17s;
-    transform-origin: 15vw -10vh;
-    box-shadow: -38vmin 0 5.50vmin currentColor;
-}
-.background span:nth-child(7) {
-    color: #5d00ff;
-    top: 22%;
-    left: 70%;
-    animation-duration: 45s;
-    animation-delay: -30s;
-    transform-origin: 20vw 12vh;
-    box-shadow: 42vmin 0 5.60vmin currentColor;
-}
-.background span:nth-child(8) {
-    color: #00aaff;
-    top: 60%;
-    left: 25%;
-    animation-duration: 52s;
-    animation-delay: -15s;
-    transform-origin: -18vw -8vh;
-    box-shadow: -45vmin 0 5.52vmin currentColor;
-}
-.background span:nth-child(9) {
-    color: #5d00ff;
-    top: 33%;
-    left: 35%;
-    animation-duration: 50s;
-    animation-delay: -40s;
-    transform-origin: 10vw 6vh;
-    box-shadow: 38vmin 0 5.58vmin currentColor;
-}
-.background span:nth-child(10) {
-    color: #00aaff;
-    top: 44%;
-    left: 45%;
-    animation-duration: 58s;
-    animation-delay: -23s;
-    transform-origin: -13vw 10vh;
-    box-shadow: -42vmin 0 5.60vmin currentColor;
-}
-.background span:nth-child(11) {
-    color: #5d00ff;
-    top: 27%;
-    left: 50%;
-    animation-duration: 47s;
-    animation-delay: -38s;
-    transform-origin: 16vw -5vh;
-    box-shadow: 40vmin 0 5.62vmin currentColor;
-}
-.background span:nth-child(12) {
-    color: #00aaff;
-    top: 59%;
-    left: 15%;
-    animation-duration: 54s;
-    animation-delay: -14s;
-    transform-origin: -17vw 7vh;
-    box-shadow: -37vmin 0 5.64vmin currentColor;
-}
-.background span:nth-child(13) {
-    color: #5d00ff;
-    top: 35%;
-    left: 75%;
-    animation-duration: 49s;
-    animation-delay: -28s;
-    transform-origin: 13vw 14vh;
-    box-shadow: 39vmin 0 5.66vmin currentColor;
-}
-.background span:nth-child(14) {
-    color: #00aaff;
-    top: 40%;
-    left: 85%;
-    animation-duration: 57s;
-    animation-delay: -16s;
-    transform-origin: -12vw -12vh;
-    box-shadow: -43vmin 0 5.68vmin currentColor;
-}
-.background span:nth-child(15) {
-    color: #5d00ff;
-    top: 55%;
-    left: 60%;
-    animation-duration: 51s;
-    animation-delay: -31s;
-    transform-origin: 11vw 11vh;
-    box-shadow: 41vmin 0 5.70vmin currentColor;
-}
-.background span:nth-child(16) {
-    color: #00aaff;
-    top: 25%;
-    left: 30%;
-    animation-duration: 56s;
-    animation-delay: -19s;
-    transform-origin: -15vw 4vh;
-    box-shadow: -40vmin 0 5.72vmin currentColor;
-}
-.background span:nth-child(17) {
-    color: #5d00ff;
-    top: 48%;
-    left: 5%;
-    animation-duration: 46s;
-    animation-delay: -33s;
-    transform-origin: 18vw -9vh;
-    box-shadow: 37vmin 0 5.74vmin currentColor;
-}
-.background span:nth-child(18) {
-    color: #00aaff;
-    top: 36%;
-    left: 50%;
-    animation-duration: 59s;
-    animation-delay: -13s;
-    transform-origin: -14vw 15vh;
-    box-shadow: -39vmin 0 5.76vmin currentColor;
-}
-.background span:nth-child(19) {
-    color: #5d00ff;
-    top: 63%;
-    left: 40%;
-    animation-duration: 53s;
-    animation-delay: -20s;
-    transform-origin: 16vw 9vh;
-    box-shadow: 40vmin 0 5.78vmin currentColor;
-}
-.background span:nth-child(20) {
-    color: #00aaff;
-    top: 29%;
-    left: 65%;
-    animation-duration: 54s;
-    animation-delay: -21s;
-    transform-origin: -11vw -6vh;
-    box-shadow: -38vmin 0 5.80vmin currentColor;
-}
-.background span:nth-child(21) {
-    color: #5d00ff;
-    top: 42%;
-    left: 75%;
-    animation-duration: 52s;
-    animation-delay: -18s;
-    transform-origin: 14vw 13vh;
-    box-shadow: 41vmin 0 5.82vmin currentColor;
-}
-.background span:nth-child(22) {
-    color: #00aaff;
-    top: 57%;
-    left: 35%;
-    animation-duration: 55s;
-    animation-delay: -25s;
-    transform-origin: -13vw 8vh;
-    box-shadow: -40vmin 0 5.84vmin currentColor;
-}
-.background span:nth-child(23) {
-    color: #5d00ff;
-    top: 39%;
-    left: 20%;
-    animation-duration: 50s;
-    animation-delay: -27s;
-    transform-origin: 12vw -7vh;
-    box-shadow: 38vmin 0 5.86vmin currentColor;
-}
-    body { font-family: sans-serif; margin: 0; color: white; background: #000b19; }
-    header { text-align: center; padding: 20px; position: relative; }
-    .category-card, .product-card { background: #111; margin: 10px; padding: 10px; cursor: pointer; border-radius: 8px; text-align: center; }
-    .product-card img { max-width: 100px; }
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.9); overflow: auto; z-index: 20; }
-    .modal-content { margin: 5% auto; padding: 20px; width: 90%; max-width: 600px; background: #111; border-radius: 8px; color: white; }
-    .close { float: right; font-size: 28px; cursor: pointer; }
-    .modal-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
-    button#toggle-cart {
-      margin-top: 10px;
-      padding: 10px 16px;
-      font-size: 16px;
-      border-radius: 6px;
-      background: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-      position: absolute;
-      right: 20px;
-      top: 20px;
-    }
-
-    .cart-panel {
-      position: fixed;
-      top: 0;
-      right: -350px;
-      width: 300px;
-      height: 100%;
-      background: #111;
-      color: white;
-      padding: 20px;
-      box-shadow: -4px 0 10px rgba(0,0,0,0.5);
-      transition: right 0.3s ease-in-out;
-      z-index: 1000;
-      border-radius: 12px 0 0 12px;
-      overflow-y: auto;
-    }
-    .cart-panel.open {
-      right: 0;
-    }
-    .cart-panel input, .cart-panel button {
-      width: 100%;
-      margin-top: 12px;
-      padding: 10px;
-      font-size: 14px;
-      border-radius: 6px;
-      border: none;
-    }
-    .cart-panel button {
-      background: #007bff;
-      color: white;
-      cursor: pointer;
-    }
-    .cart-panel h2, .cart-panel p {
-      margin: 10px 0;
-    }
-
-    /* Quantity slider styles */
-    #quantity-slider {
-      width: 100%;
-      margin-top: 10px;
-      -webkit-appearance: none;
-      background: #333;
-      height: 6px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    
-    #quantity-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #007bff;
-      cursor: pointer;
-      margin-top: -6px;
-    }
-    #quantity-slider::-moz-range-thumb {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #007bff;
-      cursor: pointer;
-    }
-
-    #quantity-display {
-      margin-top: 8px;
-      font-weight: bold;
-      text-align: center;
-    }
-  </style>
 </head>
 <body>
-  <div class="background">
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-  <header>
-    <h1>pronova store</h1>
-    <h3>your #1 for cheap items</h3>
-    <button id="toggle-cart">🛒 View Cart</button>
-  </header>
+  <header><h1>Pronova Store</h1></header>
+<canvas id="audio-visualizer"></canvas>
 
-  <section class="categories" id="category-list"></section>
 
-  <div class="cart-panel" id="cart">
-    <h2>🛒 Your Cart</h2>
-    <div id="cart-items"></div>
-    <input type="text" id="discount-code" placeholder="Discount Code" />
-    <button id="apply-discount">Apply Discount</button>
-    <p id="discount-message" style="color: lightgreen;"></p>
-    <p>Total: <strong id="cart-total">0</strong></p>
-    <input type="text" id="dc-username" placeholder="Your Discord Username" required />
-    <button id="submit-order">Submit Order</button>
-  </div>
+<div id="loading-overlay">
+  <p>Loading products...</p>
+</div>
 
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <span id="modal-close" class="close">&times;</span>
-      <h2 id="modal-title"></h2>
+<div id="cart-feedback">Added to cart!</div>
 
-      <!-- Shop start modal -->
-      <div id="start-modal" style="text-align:center; margin-top: 40px;">
-        <p>Welcome to Frozone Store! Press the button below to start shopping and enjoy some chill music.</p>
-        <button id="start-shop" style="padding:12px 24px; font-size: 18px; border-radius: 8px; background:#007bff; color:white; border:none; cursor:pointer;">Start Shopping</button>
-      </div>
+<div class="category-grid" id="category-grid"></div>
+<div class="product-grid" id="product-grid"></div>
+<div id="footer" style="text-align:center; margin:20px 0;">
+  <button class="tos-btn">Terms of Service</button>
+  <button class="pp-btn">Privacy Policy</button>
+  <button class="refund-btn">Refund and cancellation policy</button>
+  <br>
+  <button class="FAQ-btn">FAQ</button>
+  <button class="CONTACT-btn">CONTACT</button>
+  
+  
+</div>
 
-      <!-- Products grid -->
-      <div id="modal-products" class="modal-products" style="display:none;"></div>
-
-      <!-- Product detail -->
-      <div id="modal-product-detail" style="display:none; color: white;">
-        <button id="back-to-products" style="background:#444; border:none; color:white; padding:6px 12px; border-radius:6px; cursor:pointer;">← Back to products</button>
-        <h3 id="detail-name"></h3>
-        <img id="detail-image" src="" alt="" style="max-width:100%; border-radius: 8px;" />
-        <p><strong>Price:</strong> $<span id="detail-price"></span></p>
-        <p><strong>Stock:</strong> <span id="detail-stock"></span></p>
-        <p id="detail-description"></p>
-
-        <label for="quantity-slider">Quantity:</label>
-        <input type="range" id="quantity-slider" min="1" max="1" value="1" />
-        <div id="quantity-display">1</div>
-
-        <button id="add-to-cart" style="background:#007bff; color:white; padding:10px 20px; border:none; border-radius:8px; cursor:pointer; margin-top: 10px;">Add to Cart</button>
-      </div>
+<!-- TOS Modal -->
+<div id="tos-modal" class="modal">
+  <div class="modal-content">
+    <h2>Terms of Service</h2>
+     <div class="modal-text">
+      <p>By using our digital services, you agree to the following terms:</p>
+      <ul>
+        <li><strong>Service Delivery:</strong> All services are delivered digitally. If delivery takes longer than expected, please don’t throw a tantrum like a whiny baby—contact us politely instead.</li>
+        <li><strong>Payments:</strong> All payments are final. Ensure all details are correct before purchasing. Refunds are only given if explicitly stated.</li>
+        <li><strong>Usage:</strong> You may only use the services for lawful purposes. Unauthorized redistribution or abuse is prohibited.</li>
+        <li><strong>Liability:</strong> Services are provided “as-is.” We are not responsible for indirect or incidental damages. Keyboard rage is your problem, not ours.</li>
+        <li><strong>Modifications:</strong> We may update these terms at any time. Continued use constitutes acceptance.</li>
+      </ul>
     </div>
+    <button class="close-btn">Close</button>
   </div>
+</div>
 
-  <!-- Background music -->
-  <audio id="bg-music" loop src="bg.mp3"></audio>
-  <script>
-    const bgMusic = document.getElementById('bg-music');
-    bgMusic.volume = 0.2;
-  </script>
-  <script type="module">
-    
-    import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app-check.js";
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+<!-- REFUND Modal -->
+<div id="refund-modal" class="modal">
+  <div class="modal-content">
+    <h3>Refund & Cancellation Policy</h3>
+<p>Once work has started on an order, refunds are generally not available. If no work has begun yet, you may request a cancellation.</p>
+<ul>
+  <li><strong>If the service is not delivered:</strong> You will receive a refund. Easy.</li>
+  <li><strong>If it takes longer than expected:</strong> Just message us politely. 
+  We promise we respond much faster to normal humans than to “BRO WHERE IS MY ORDER???” energy.</li>
+  <li><strong>Chargebacks for no reason:</strong> Result in a permanent ban and possibly us placing a curse on your microwave.</li>
+</ul>
 
-     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyD9imRu3ckf2bE6J9izCm43rnAGXOiqvSA",
-  authDomain: "smol-devs.firebaseapp.com",
-  projectId: "smol-devs",
-  storageBucket: "smol-devs.firebasestorage.app",
-  messagingSenderId: "675801229903",
-  appId: "1:675801229903:web:8d366648305b0731f8183a",
-  measurementId: "G-RJ1NS8E4K9"
-};
+    <button class="close-btn">Close</button>
+  </div>
+</div>
+
+<!-- FAQ Modal -->
+<div id="FAQ-modal" class="modal">
+  <div class="modal-content">
+    <h3>FAQ</h3>
+<ul>
+  <li><strong>Q: How long does it take?</strong><br>
+  A: Usually within 2-3 hours/days depending on workload.</li>
+
+  <li><strong>Q: Can I get updates?</strong><br>
+  A: Yes. Just ask. Nicely.</li>
+
+  <li><strong>Q: Do you offer discounts?</strong><br>
+  A: If we ever feel generous. Check Discord.</li>
+
+  <li><strong>Q: Can I resell the service?</strong><br>
+  A: Can we stop you?</li>
+</ul>
 
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const appCheck = initializeAppCheck(app, {
-  provider: new ReCaptchaV3Provider('6Lf-anUrAAAAADCtRE4m06mzc5WTQYOa0mvOggyi'),
-  isTokenAutoRefreshEnabled: true // keeps your app check tokens fresh automatically
-});
-    const categoryList = document.getElementById('category-list');
-    const modal = document.getElementById('modal');
-    const modalTitle = document.getElementById('modal-title');
-    const modalProducts = document.getElementById('modal-products');
-    const modalProductDetail = document.getElementById('modal-product-detail');
-    const modalClose = document.getElementById('modal-close');
-    const backToProductsBtn = document.getElementById('back-to-products');
-
-    const detailName = document.getElementById('detail-name');
-    const detailImage = document.getElementById('detail-image');
-    const detailPrice = document.getElementById('detail-price');
-    const detailStock = document.getElementById('detail-stock');
-    const detailDescription = document.getElementById('detail-description');
-    const addToCartBtn = document.getElementById('add-to-cart');
-
-    const quantitySlider = document.getElementById('quantity-slider');
-    const quantityDisplay = document.getElementById('quantity-display');
-
-    const cartItemsDiv = document.getElementById('cart-items');
-    const cartTotal = document.getElementById('cart-total');
-    const submitOrderBtn = document.getElementById('submit-order');
-    const dcInput = document.getElementById('dc-username');
-
-    const discountCodeInput = document.getElementById('discount-code');
-    const applyDiscountBtn = document.getElementById('apply-discount');
-    const discountMessage = document.getElementById('discount-message');
-
-    const toggleCartBtn = document.getElementById('toggle-cart');
-    const cartPanel = document.getElementById('cart');
-
-    const startModal = document.getElementById('start-modal');
-    const startShopBtn = document.getElementById('start-shop');
-
-    let currentCategory = "";
-    let currentProduct = null;
-    let cart = [];
-
-    let discountPercent = 0;
-    let discountFixed = 0;
-
-    function updateQuantityDisplay(value) {
-      quantityDisplay.textContent = value;
-    }
-
-    quantitySlider.oninput = () => {
-      updateQuantityDisplay(quantitySlider.value);
-    };
-async function getWebhookUrl() {
-  const docRef = doc(db, "config", "webhooks");
-  const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists()) {
-    return docSnap.data().orderWebhookUrl;
-  } else {
-    throw new Error("No webhook URL found in Firestore");
-  }
-}
-    async function loadCategories() {
-      const categoriesSnapshot = await getDocs(collection(db, "categories"));
-      categoryList.innerHTML = '';
-      categoriesSnapshot.forEach(doc => {
-        const div = document.createElement('div');
-        div.className = 'category-card';
-        div.textContent = doc.id;
-        div.onclick = () => openCategoryModal(doc.id);
-        categoryList.appendChild(div);
-      });
-    }
-    
-    async function openCategoryModal(categoryId) {
-      currentCategory = categoryId;
-      modalTitle.textContent = categoryId;
-      modalProducts.innerHTML = 'Loading...';
-      modalProducts.style.display = 'grid';
-      modalProductDetail.style.display = 'none';
-
-      const productsRef = collection(db, "categories", categoryId, "products");
-      const productsSnapshot = await getDocs(productsRef);
-
-      modalProducts.innerHTML = '';
-      productsSnapshot.forEach(doc => {
-        const data = doc.data();
-        data.id = doc.id; // add doc id to product data for identification
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.innerHTML = `<img src="${data.image}" alt="${data.name}" /><h4>${data.name}</h4><p>$${data.price}</p>`;
-        card.onclick = () => showProductDetail(data);
-        modalProducts.appendChild(card);
-      });
-      startModal.style.display = 'none';
-      modalProducts.style.display = 'grid';
-      modalProductDetail.style.display = 'none';
-      modal.style.display = 'block';
-    }
-
-    function showProductDetail(product) {
-  currentProduct = product;
-  modalTitle.textContent = product.name;
-  detailName.textContent = product.name;
-  detailImage.src = product.image;
-  detailPrice.textContent = product.price;
-  
-  // Show stock as number or ∞ for infinite (-1 or less)
-  if (product.stock !== undefined && product.stock !== null && product.stock < 0) {
-    detailStock.textContent = "∞";
-  } else {
-    detailStock.textContent = product.stock ?? '∞';
-  }
-  
-  detailDescription.textContent = product.description || '';
-
-  // Setup slider max based on stock (or 1000 if infinite)
-  let maxQty = product.stock;
-  if (maxQty === undefined || maxQty === null || maxQty < 0) maxQty = 1000;
-  if (maxQty <= 0) maxQty = 1;
-  
-  quantitySlider.max = maxQty;
-  quantitySlider.value = 1;
-  updateQuantityDisplay(1);
-
-  modalProducts.style.display = 'none';
-  modalProductDetail.style.display = 'block';
-}
-
-    addToCartBtn.onclick = () => {
-      if (!currentProduct) return;
-
-      const qty = Number(quantitySlider.value);
-      const availableStock = currentProduct.stock;
-
-      if (availableStock !== undefined && availableStock !== null && availableStock == 0) {
-        alert("Sorry, this product is out of stock.");
-        return;
-      }
-      if (availableStock < 0){
-        detailStock.textContent = "∞"; 
-      }
-
-      const existing = cart.find(item => item.id === currentProduct.id);
-
-      if (existing && availableStock !== undefined && availableStock !== null && existing.quantity + qty > availableStock) {
-        alert("You can't add more of this item, stock limit reached.");
-        return;
-      }
-
-      if (existing) {
-        existing.quantity += qty;
-      } else {
-        cart.push({ ...currentProduct, quantity: qty });
-      }
-      updateCartUI();
-      modal.style.display = 'none';
-    };
-
-    function updateCartUI() {
-      if (cart.length === 0) {
-        cartItemsDiv.innerHTML = "<em>Your cart is empty.</em>";
-      } else {
-        cartItemsDiv.innerHTML = cart.map(i => `<div>${i.name} x${i.quantity} - $${(i.quantity * i.price).toFixed(2)}</div>`).join('');
-      }
-
-      let total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
-
-      // Apply discount
-      if (discountPercent) total = total * (1 - discountPercent / 100);
-      if (discountFixed) total -= discountFixed;
-      if (total < 0) total = 0;
-
-      cartTotal.textContent = total.toFixed(2);
-    }
+    <button class="close-btn">Close</button>
+  </div>
+</div>
 
 
 
-applyDiscountBtn.onclick = async () => {
-  const code = discountCodeInput.value.trim().toUpperCase();
-  if (!code) return;
+<!-- Privacy Policy Modal -->
+<div id="pp-modal" class="modal">
+  <div class="modal-content">
+    <h2>Privacy Policy</h2>
+    <div class="modal-text">
+  <p>Your privacy is important to us. Here’s how we handle your data:</p>
+  <ul>
+    <li><strong>Information Collected:</strong> We only collect the information you provide, such as your email for receipts and payment details, all handled securely.</li>
+    <li><strong>Use of Information:</strong> To deliver our services and improve the functionality of the website.</li>
+    <li><strong>Data Sharing:</strong> Your information is shared only with service providers necessary to deliver our services (e.g., Stripe). We do not sell your data.</li>
+    <li><strong>Storage Awareness:</strong> You don’t need to worry about your data being shared—mostly because we may or may not be too stupid to even find it.</li>
+    <li><strong>Cookies:</strong> Used for analytics and site functionality. You may disable them in your browser if you prefer.</li>
+    <li><strong>Security:</strong> Reasonable measures are in place to protect your data. <em>(If someone hacks us, that’s on them, not you—keyboard ninjas beware.)</em></li>
+    <li><strong>Updates:</strong> Continued use of our services constitutes acceptance of any updates to this Privacy Policy.</li>
+  </ul>
+</div>
 
-  try {
-    const codeRef = doc(db, "discountCodes", code);
-    const codeSnap = await getDoc(codeRef);
-
-    if (!codeSnap.exists()) {
-      discountPercent = 0;
-      discountFixed = 0;
-      discountMessage.textContent = "Invalid discount code.";
-      updateCartUI();
-      return;
-    }
-
-    const data = codeSnap.data();
-    if (data.type === "percent") {
-      discountPercent = data.amount;
-      discountFixed = 0;
-      discountMessage.textContent = `${discountPercent}% discount applied!`;
-    } else if (data.type === "fixed") {
-      discountFixed = data.amount;
-      discountPercent = 0;
-      discountMessage.textContent = `$${discountFixed} discount applied!`;
-    } else {
-      discountPercent = 0;
-      discountFixed = 0;
-      discountMessage.textContent = "Invalid discount type.";
-    }
-
-    updateCartUI();
-  } catch (err) {
-    discountMessage.textContent = "Failed to apply discount.";
-    console.error(err);
-  }
-};
+    <button class="close-btn">Close</button>
+  </div>
+</div>
 
 
-    submitOrderBtn.onclick = async () => {
-      if (cart.length === 0) {
-        alert("Your cart is empty.");
-        return;
-      }
-      if (!dcInput.value.trim()) {
-        alert("Please enter your Discord username.");
-        return;
-      }
 
-      const order = {
-        username: dcInput.value.trim(),
-        cart,
-        total: Number(cartTotal.textContent),
-        date: new Date().toISOString()
-      };
+<div class="cart" id="cart">
+  <h3>Cart</h3>
+  <ul id="cart-items"></ul>
+  <p>Total: $<span id="cart-total">0</span></p>
+  <button id="checkout-btn">Checkout</button>
+</div>
 
-      try {
-        // Update stock in Firebase
-        for (const item of cart) {
-          if (item.stock !== undefined && item.stock !== null) {
-            const productRef = doc(db, "categories", currentCategory, "products", item.id);
-            const newStock = (item.stock - item.quantity);
-            if (newStock === 0) throw new Error("Stock error");
-            await updateDoc(productRef, { stock: newStock });
-          }
-        }
+<div id="start-modal">
+  <h1>Start Shopping</h1>
+  <button id="start-btn">Enter</button>
+</div>
 
-        // Send order webhook
-        const webhookUrl = await getWebhookUrl();
-        await fetch(webhookUrl, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    content: `New order from **${order.username}**\nItems:\n${cart.map(i => `- ${i.name} x${i.quantity} ($${(i.price * i.quantity).toFixed(2)}) [${i.category ?? currentCategory}]`).join('\n')}\nTotal: $${order.total.toFixed(2)}`,
-    username: "pronova shop",                 // <-- Your custom webhook name here
-    avatar_url: "https://i.ibb.co/W4QwNcBz/TW1-ZT-1.png"  // <-- Your custom avatar URL here
-  }),
+<audio id="bg-music" loop>
+</audio>
 
-
-        });
-
-        alert("Order placed. We will contact you very soon.");
-        cart = [];
-        updateCartUI();
-        dcInput.value = "";
-        discountCodeInput.value = "";
-        discountMessage.textContent = "";
-        discountPercent = 0;
-        discountFixed = 0;
-        cartPanel.classList.remove('open');
-      } catch (error) {
-        alert("Error submitting order: " + error.message);
-      }
-    };
-
-    modalClose.onclick = () => {
-      modal.style.display = 'none';
-    };
-    backToProductsBtn.onclick = () => {
-      modalTitle.textContent = currentCategory;
-      modalProducts.style.display = 'grid';
-      modalProductDetail.style.display = 'none';
-    };
-
-    window.onclick = (event) => {
-      if (event.target == modal) {
-        modal.style.display = 'none';
-      }
-    };
-
-    toggleCartBtn.onclick = () => {
-      cartPanel.classList.toggle('open');
-    };
-
-    // Chill music control
-    const bgMusic = document.getElementById('bg-music');
-
-    startShopBtn.onclick = () => {
-      bgMusic.play().catch(() => {
-        console.warn('Music playback failed.');
-      });
-      startModal.style.display = 'none';
-      modalProducts.style.display = 'grid';
-      modalTitle.textContent = "Categories";
-      modal.style.display = 'none';
-    };
-
-    // Show modal on page load with shop start screen
-    window.onload = async () => {
-      await loadCategories();
-      modal.style.display = 'block';
-      startModal.style.display = 'block';
-      modalProducts.style.display = 'none';
-      modalProductDetail.style.display = 'none';
-      modalTitle.textContent = "Welcome";
-    };
-  </script>
+<script type="module" src="./store.js"></script>
 </body>
 </html>
