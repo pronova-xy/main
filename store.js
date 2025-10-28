@@ -306,7 +306,7 @@ checkoutBtn.addEventListener('click', async () => {
   if(cart.length === 0) return alert('Cart is empty');
 
   try {
-    const res = await fetch('http://129.153.149.181:4242/create-checkout-session', {
+    const res = await fetch('https://api.pronova.store/create-checkout-session', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ cartItems: cart })
