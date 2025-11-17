@@ -213,7 +213,7 @@ tosBtn.addEventListener('click', () => tosModal.style.display='flex');
 ppBtn.addEventListener('click', () => ppModal.style.display='flex');
 refundBtn.addEventListener('click', () => refundModal.style.display='flex');
 FAQBtn.addEventListener('click', () => FAQModal.style.display='flex');
-CONTACTbtn.addEventListener('click', () => window.open('https://discord.gg/mcrGnEBB9m'));
+CONTACTbtn.addEventListener('click', () => window.open('https://discord.gg/gxqkdCMnYn'));
 
 closeBtns.forEach(btn => btn.addEventListener('click', () => btn.closest('.modal').style.display='none'));
 window.addEventListener('click', e => { if(e.target.classList.contains('modal')) e.target.style.display='none'; });
