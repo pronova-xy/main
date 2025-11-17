@@ -52,7 +52,7 @@ let selectedCategory = null;
 
 // ---------------- Audio ----------------
 const bgMusic = document.getElementById('bg-music');
-const playlist = ['bg1.mp3','bg2.mp3','bg3.mp3','bg4.mp3','bg5.mp3'];
+const playlist = ['bg1.mp3','bg2.mp3','bg3.mp3'];
 let currentTrack = 0;
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
