@@ -5,137 +5,116 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pronova Store</title>
 <link rel="stylesheet" href="style.css">
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="https://js.stripe.com/v3/"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-check-compat.js"></script>
-
-<!-- Include other services you use -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-
 </head>
 <body>
   <header><h1>Pronova Store</h1></header>
-<canvas id="audio-visualizer"></canvas>
 
+  <canvas id="audio-visualizer"></canvas>
 
-<div id="loading-overlay">
-  <p>Loading products...</p>
-</div>
+  <div id="loading-overlay">
+    <p>Loading products...</p>
+  </div>
 
-<div id="cart-feedback">Added to cart!</div>
+  <div id="cart-feedback">Added to cart!</div>
 
-<div class="category-grid" id="category-grid"></div>
-<div class="product-grid" id="product-grid"></div>
-<div id="footer" style="text-align:center; margin:20px 0;">
-  <button class="tos-btn">Terms of Service</button>
-  <button class="pp-btn">Privacy Policy</button>
-  <button class="refund-btn">Refund and cancellation policy</button>
-  <br>
-  <button class="FAQ-btn">FAQ</button>
-  <button class="CONTACT-btn">CONTACT</button>
-  
-  
-</div>
+  <div class="category-grid" id="category-grid"></div>
+  <div class="product-grid" id="product-grid"></div>
 
-<!-- TOS Modal -->
-<div id="tos-modal" class="modal">
-  <div class="modal-content">
-    <h2>Terms of Service</h2>
-     <div class="modal-text">
-      <p>By using our digital services, you agree to the following terms:</p>
-      <ul>
-        <li><strong>Service Delivery:</strong> All services are delivered digitally. If delivery takes longer than expected, please don’t throw a tantrum like a whiny baby—contact us politely instead.</li>
-        <li><strong>Payments:</strong> All payments are final. Ensure all details are correct before purchasing. Refunds are only given if explicitly stated.</li>
-        <li><strong>Usage:</strong> You may only use the services for lawful purposes. Unauthorized redistribution or abuse is prohibited.</li>
-        <li><strong>Liability:</strong> Services are provided “as-is.” We are not responsible for indirect or incidental damages. Keyboard rage is your problem, not ours.</li>
-        <li><strong>Modifications:</strong> We may update these terms at any time. Continued use constitutes acceptance.</li>
-      </ul>
+  <div id="footer" style="text-align:center; margin:20px 0;">
+    <button class="tos-btn">Terms of Service</button>
+    <button class="pp-btn">Privacy Policy</button>
+    <button class="refund-btn">Refund and cancellation policy</button>
+    <br>
+    <button class="FAQ-btn">FAQ</button>
+    <button class="CONTACT-btn">CONTACT</button>
+  </div>
+
+  <!-- TOS Modal -->
+  <div id="tos-modal" class="modal">
+    <div class="modal-content">
+      <h2>Terms of Service</h2>
+      <div class="modal-text">
+        <p>By using our digital services, you agree to the following terms:</p>
+        <ul>
+          <li><strong>Service Delivery:</strong> All services are delivered digitally. If delivery takes longer than expected, please contact us politely.</li>
+          <li><strong>Payments:</strong> All payments are final. Ensure all details are correct before purchasing.</li>
+          <li><strong>Nitro Payments:</strong> Nitro gift code payments are only accepted once the gift has been <strong>verified and successfully resold</strong>. Until the gift is resold, your order will remain pending and will not be delivered.</li>
+          <li><strong>Usage:</strong> You may only use the services for lawful purposes.</li>
+          <li><strong>Liability:</strong> Services are provided "as-is." We are not responsible for indirect or incidental damages.</li>
+          <li><strong>Modifications:</strong> We may update these terms at any time. Continued use constitutes acceptance.</li>
+        </ul>
+      </div>
+      <button class="close-btn">Close</button>
     </div>
-    <button class="close-btn">Close</button>
   </div>
-</div>
 
-<!-- REFUND Modal -->
-<div id="refund-modal" class="modal">
-  <div class="modal-content">
-    <h3>Refund & Cancellation Policy</h3>
-<p>Once work has started on an order, refunds are generally not available. If no work has begun yet, you may request a cancellation.</p>
-<ul>
-  <li><strong>If the service is not delivered:</strong> You will receive a refund. Easy.</li>
-  <li><strong>If it takes longer than expected:</strong> Just message us politely. 
-  We promise we respond much faster to normal humans than to “BRO WHERE IS MY ORDER???” energy.</li>
-  <li><strong>Chargebacks for no reason:</strong> Result in a permanent ban and possibly us placing a curse on your microwave.</li>
-</ul>
-
-    <button class="close-btn">Close</button>
+  <!-- Refund Modal -->
+  <div id="refund-modal" class="modal">
+    <div class="modal-content">
+      <h3>Refund & Cancellation Policy</h3>
+      <p>Once work has started on an order, refunds are generally not available. If no work has begun yet, you may request a cancellation.</p>
+      <ul>
+        <li><strong>If the service is not delivered:</strong> You will receive a refund. Easy.</li>
+        <li><strong>If it takes longer than expected:</strong> Just message us politely. We promise we respond much faster to normal humans than to “BRO WHERE IS MY ORDER???” energy.</li>
+        <li><strong>Chargebacks for no reason:</strong> Result in a permanent ban and possibly us placing a curse on your microwave.</li>
+      </ul>
+      <button class="close-btn">Close</button>
+    </div>
   </div>
-</div>
 
-<!-- FAQ Modal -->
-<div id="FAQ-modal" class="modal">
-  <div class="modal-content">
-    <h3>FAQ</h3>
-<ul>
-  <li><strong>Q: How long does it take?</strong><br>
-  A: Usually within 2-3 hours/days depending on workload.</li>
-
-  <li><strong>Q: Can I get updates?</strong><br>
-  A: Yes. Just ask. Nicely.</li>
-
-  <li><strong>Q: Do you offer discounts?</strong><br>
-  A: If we ever feel generous. Check Discord.</li>
-
-  <li><strong>Q: Can I resell the service?</strong><br>
-  A: Can we stop you?</li>
-</ul>
-
-
-    <button class="close-btn">Close</button>
+  <!-- FAQ Modal -->
+  <div id="FAQ-modal" class="modal">
+    <div class="modal-content">
+      <h3>FAQ</h3>
+      <ul>
+        <li><strong>Q: How long does it take?</strong><br>
+            A: Usually within 2-3 hours/days depending on workload.</li>
+        <li><strong>Q: Can I get updates?</strong><br>
+            A: Yes. Just ask. Nicely.</li>
+        <li><strong>Q: Do you offer discounts?</strong><br>
+            A: If we ever feel generous. Check Discord.</li>
+        <li><strong>Q: Can I resell the service?</strong><br>
+            A: Can we stop you?</li>
+      </ul>
+      <button class="close-btn">Close</button>
+    </div>
   </div>
-</div>
 
-
-
-<!-- Privacy Policy Modal -->
-<div id="pp-modal" class="modal">
-  <div class="modal-content">
-    <h2>Privacy Policy</h2>
-    <div class="modal-text">
-  <p>Your privacy is important to us. Here’s how we handle your data:</p>
-  <ul>
-    <li><strong>Information Collected:</strong> We only collect the information you provide, such as your email for receipts and payment details, all handled securely.</li>
-    <li><strong>Use of Information:</strong> To deliver our services and improve the functionality of the website.</li>
-    <li><strong>Data Sharing:</strong> Your information is shared only with service providers necessary to deliver our services (e.g., Stripe). We do not sell your data.</li>
-    <li><strong>Storage Awareness:</strong> You don’t need to worry about your data being shared—mostly because we may or may not be too stupid to even find it.</li>
-    <li><strong>Cookies:</strong> Used for analytics and site functionality. You may disable them in your browser if you prefer.</li>
-    <li><strong>Security:</strong> Reasonable measures are in place to protect your data. <em>(If someone hacks us, that’s on them, not you—keyboard ninjas beware.)</em></li>
-    <li><strong>Updates:</strong> Continued use of our services constitutes acceptance of any updates to this Privacy Policy.</li>
-  </ul>
-</div>
-
-    <button class="close-btn">Close</button>
+  <!-- Privacy Policy Modal -->
+  <div id="pp-modal" class="modal">
+    <div class="modal-content">
+      <h2>Privacy Policy</h2>
+      <div class="modal-text">
+        <p>Your privacy is important to us. Here’s how we handle your data:</p>
+        <ul>
+          <li><strong>Information Collected:</strong> We only collect the information you provide, such as your email for receipts and payment details, all handled securely.</li>
+          <li><strong>Use of Information:</strong> To deliver our services and improve the functionality of the website.</li>
+          <li><strong>Data Sharing:</strong> Your information is shared only with service providers necessary to deliver our services (e.g., Stripe). We do not sell your data.</li>
+          <li><strong>Storage Awareness:</strong> You don’t need to worry about your data being shared—mostly because we may or may not be too stupid to even find it.</li>
+          <li><strong>Cookies:</strong> Used for analytics and site functionality. You may disable them in your browser if you prefer.</li>
+          <li><strong>Security:</strong> Reasonable measures are in place to protect your data. <em>(If someone hacks us, that’s on them, not you—keyboard ninjas beware.)</em></li>
+          <li><strong>Updates:</strong> Continued use of our services constitutes acceptance of any updates to this Privacy Policy.</li>
+        </ul>
+      </div>
+      <button class="close-btn">Close</button>
+    </div>
   </div>
-</div>
 
+  <div class="cart" id="cart">
+    <h3>Cart</h3>
+    <ul id="cart-items"></ul>
+    <p>Total: $<span id="cart-total">0</span></p>
+    <input id="discord-username" type="text" placeholder="Your Discord username">
+    <button id="checkout-btn">Checkout</button>
+  </div>
 
+  <div id="start-modal">
+    <h1>Start Shopping</h1>
+    <button id="start-btn">Enter</button>
+  </div>
 
-<div class="cart" id="cart">
-  <h3>Cart</h3>
-  <ul id="cart-items"></ul>
-  <p>Total: $<span id="cart-total">0</span></p>
-  <button id="checkout-btn">Checkout</button>
-</div>
+  <audio id="bg-music" loop></audio>
 
-<div id="start-modal">
-  <h1>Start Shopping</h1>
-  <button id="start-btn">Enter</button>
-</div>
-
-<audio id="bg-music" loop>
-</audio>
-
-<script type="module" src="./store.js"></script>
+  <script type="module" src="./store.js"></script>
 </body>
 </html>
