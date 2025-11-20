@@ -125,15 +125,18 @@ function drawVisualizer() {
 }
 drawVisualizer();
 
+import { query, orderBy } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
 async function loadCategoriesWithProducts() {
   productGrid.innerHTML = ''; // Clear existing content
 
-  const catSnap = await getDocs(collection(db, 'categories'));
+  // Get categories ordered by "id" ascending
+  const catSnap = await getDocs(query(collection(db, 'categories'), orderBy('id', 'asc')));
 
   for (const catDoc of catSnap.docs) {
     const category = catDoc.data();
 
-    // Category header on its own line
+    // Category header
     const catHeader = document.createElement('div');
     catHeader.className = 'category-header';
     catHeader.style.fontWeight = 'bold';
@@ -141,16 +144,16 @@ async function loadCategoriesWithProducts() {
     catHeader.textContent = category.name;
     productGrid.appendChild(catHeader);
 
-    // Fetch products for this category
-    const prodSnap = await getDocs(collection(db, 'categories', catDoc.id, 'products'));
+    // Fetch products for this category, ordered by "id" ascending
+    const prodSnap = await getDocs(query(collection(db, 'categories', catDoc.id, 'products'), orderBy('id', 'asc')));
 
     for (const prodDoc of prodSnap.docs) {
-      const product   = prodDoc.data();
+      const product = prodDoc.data();
       const isAvailable = product.stock >= 0 || product.stock <= -10;
 
       const prodLine = document.createElement('div');
       prodLine.className = 'product';
-      prodLine.style.marginLeft = '20px'; // indent for clarity
+      prodLine.style.marginLeft = '20px';
       prodLine.style.marginBottom = '10px';
       prodLine.textContent = `${product.name} - $${product.price} - ${product.description}`;
 
@@ -162,12 +165,12 @@ async function loadCategoriesWithProducts() {
 
       prodLine.appendChild(button);
       productGrid.appendChild(prodLine);
-
     }
   }
 
-  hideLoading(); // hide overlay once everything is rendered
+  hideLoading();
 }
+
 
 loadCategoriesWithProducts();
 
